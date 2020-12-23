@@ -1,0 +1,15 @@
+[Unit]
+Description=Starts the avahi/mDNS service for nosticOS
+After=nos-engine.target
+
+[Service]
+ExecStartPre=/bin/docker load -i /usr/share/nos/images/nos-service-avahi.tar.gz
+ExecStart=/bin/docker run --name nos-service-avahi --userns=host --network=host -e SERVER_HOST_NAME=nos -e SERVER_DOMAIN_NAME=local -e SERVER_USE_IPV4=yes -e SERVER_USE_IPV6=yes appnostic/nos-service-avahi:latest
+Restart=on-failure
+RestartSec=2
+StartLimitBurst=5
+StartLimitInterval=10
+StandardOutput=journal+console
+
+[Install]
+WantedBy=nos-services.target
